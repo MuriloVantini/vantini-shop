@@ -11,6 +11,13 @@ class Product extends Model
     use HasFactory;
     protected $fillable = ['name', 'description', 'price'];
 
+    protected function casts()
+    {
+        return [
+            'price' => 'float',
+        ];
+    }
+
     public function categories(): BelongsToMany
     {
         return $this->belongsToMany(Category::class, 'category_product');
@@ -20,5 +27,4 @@ class Product extends Model
     {
         return $this->belongsToMany(Size::class, 'product_size')->withPivot(['quantity']);
     }
-    
 }
