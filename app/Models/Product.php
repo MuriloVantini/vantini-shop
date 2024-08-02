@@ -9,12 +9,16 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 class Product extends Model
 {
     use HasFactory;
-    protected $fillable = ['name', 'description', 'price'];
+    protected $fillable = ['name', 'description', 'images', 'rating', 'price'];
 
     protected function casts()
     {
         return [
+            'name' => 'string',
+            'description' => 'string',
             'price' => 'float',
+            'rating' => 'float',
+            'images' => 'array',
         ];
     }
 

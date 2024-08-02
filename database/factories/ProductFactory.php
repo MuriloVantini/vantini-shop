@@ -19,6 +19,8 @@ class ProductFactory extends Factory
         return [
             'name' => fake()->sentence(),
             'description' => fake()->paragraph(2, true),
+            'images' => ['https://acdn.mitiendanube.com/stores/118/472/products/anos-70-costas-3b58e1559a97e8808616351945345653-240-0.jpg'],
+            'rating' => fake()->unique()->randomFloat(2, 1, 5),
             'price' => fake()->unique()->randomFloat(2, 50, 2000),
         ];
     }
