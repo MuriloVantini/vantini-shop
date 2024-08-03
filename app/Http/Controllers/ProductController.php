@@ -68,7 +68,24 @@ class ProductController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+        $product = Product::findOrFail($id);
+
+        $request->validate([
+            'name' => ['required', 'max:50'],
+            'description' => ['required', 'max:255'],
+            'price' => ['required', 'numeric', 'min:0', 'not_in:0'],
+            'sizes_names' => ['required', 'array', 'each' => ['required', 'char', 'in:PP,P,M,G,GG,XG,XGG']],
+            'sizes' => ['required', 'array', 'each' => ['required', 'integer'],],
+        ]);
+        $product->update([
+            'name' => $request->name,
+            'description' => $request->description,
+            'price' => $request->price,
+            'sizes_names' => $request->sizes_names,
+            'sizes' => $request->sizes,
+        ]);
+        $product->load('sizes');
+        return response()->json(['message' => 'Produto ' . $id . ' atualizado com sucesso!', 'data' => $product], Response::HTTP_OK);
     }
 
     /**

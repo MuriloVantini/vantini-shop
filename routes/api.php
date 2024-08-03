@@ -19,5 +19,8 @@ Route::middleware(['auth:sanctum'])->group(function () {
     // });
 });
 
-Route::middleware(['auth:sanctum', VerifyAdmin::class])->post('/product', [ProductController::class, 'store'])->name('product.store');
+Route::middleware(['auth:sanctum', VerifyAdmin::class])->group(function () {
+    Route::post('/product', [ProductController::class, 'store'])->name('product.store');
+    Route::put('/product/{id}', [ProductController::class, 'update'])->name('product.update');
+});
 require __DIR__ . '/auth.php';
