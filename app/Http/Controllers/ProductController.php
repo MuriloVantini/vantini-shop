@@ -6,6 +6,7 @@ use App\Models\Product;
 use App\Models\Size;
 use App\Services\PaginateAndFilter;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Symfony\Component\HttpFoundation\Response;
 
 class ProductController extends Controller
@@ -33,33 +34,35 @@ class ProductController extends Controller
             'categories_id' => ['required', 'exists:categories,id']
         ]);
 
-        $product = Product::create([
-            'name' => $request->name,
-            'description' => $request->description,
-            'price' => $request->price,
-            'rating' => 0,
-            'images' => 'https://encrypted-tbn1.gstatic.com/shopping?q=tbn:ANd9GcSqLlSyCbzV4zhkXkyptnI3TwLnZX0rzxdWY30RhsSGp3hA8uyRNWWYiIMRywH2KUy5ozt6PoSAWw_k6IFDdWtLPpZh1JLB_wZYvZd2kJXSoJyuDLxF7w6O&usqp=CAE',
-        ]);
+        $result = DB::transaction(function () use ($request) {
+            $product = Product::create([
+                'name' => $request->name,
+                'description' => $request->description,
+                'price' => $request->price,
+                'rating' => 0,
+                'images' => 'https://encrypted-tbn1.gstatic.com/shopping?q=tbn:ANd9GcSqLlSyCbzV4zhkXkyptnI3TwLnZX0rzxdWY30RhsSGp3hA8uyRNWWYiIMRywH2KUy5ozt6PoSAWw_k6IFDdWtLPpZh1JLB_wZYvZd2kJXSoJyuDLxF7w6O&usqp=CAE',
+            ]);
 
-        // Associar categorias ao produto
-        $categories = $product->categories()->attach($request->categories_id);
+            // Associar categorias ao produto
+            $categories = $product->categories()->attach($request->categories_id);
 
 
-        // Associar tamanhos ao produto com quantidade
-        if (sizeOf($request->sizes_names) == sizeof($request->sizes)) {
+            // Associar tamanhos ao produto com quantidade
             $sizes = collect($request->sizes_names)->mapWithKeys(function ($sizeName, $index) use ($request) {
                 $size = Size::select('id', 'name')->where('name', $sizeName)->first();
                 return [$size->id => ['quantity' => $request->sizes[$index]]];
             });
-
             $product->sizes()->sync($sizes);
 
             // Carregar os tamanhos associados ao produto
             $product->load('sizes');
             $product->load('categories');
-            return response()->json(['message' => 'Product created successfully', 'data' => $product], Response::HTTP_CREATED);
-        }
-        return response()->json(['message' => 'Error associating sizes to product'], Response::HTTP_UNPROCESSABLE_ENTITY);
+
+
+            return $product;
+        });
+
+        return response()->json(['message' => 'Product created successfully', 'data' => $result], Response::HTTP_CREATED);
     }
 
     /**
