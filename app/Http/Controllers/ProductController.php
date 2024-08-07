@@ -40,7 +40,7 @@ class ProductController extends Controller
                 'description' => $request->description,
                 'price' => $request->price,
                 'rating' => 0,
-                'images' => 'https://encrypted-tbn1.gstatic.com/shopping?q=tbn:ANd9GcSqLlSyCbzV4zhkXkyptnI3TwLnZX0rzxdWY30RhsSGp3hA8uyRNWWYiIMRywH2KUy5ozt6PoSAWw_k6IFDdWtLPpZh1JLB_wZYvZd2kJXSoJyuDLxF7w6O&usqp=CAE',
+                'images' => ['https://encrypted-tbn1.gstatic.com/shopping?q=tbn:ANd9GcSqLlSyCbzV4zhkXkyptnI3TwLnZX0rzxdWY30RhsSGp3hA8uyRNWWYiIMRywH2KUy5ozt6PoSAWw_k6IFDdWtLPpZh1JLB_wZYvZd2kJXSoJyuDLxF7w6O&usqp=CAE'],
             ]);
 
             // Associar categorias ao produto
